@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitAddinPlatform</Name>
+    <Assembly>RevitAddinPlatform\Main.dll</Assembly>
+    <ClientId>085B1F09-5D80-4432-8581-608416D639C5</ClientId>
+    <FullClassName>Main.PlatformApplication</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, www.autodesk.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>
