@@ -2,6 +2,23 @@
 
 本框架将 Revit 与 AI 能力相结合，以 AI 为脑、插件为手，实现 AI 对 Revit 的自主控制。
 
+## Copilot 生态
+
+本仓库是 Copilot For Revit 生态的核心组件：
+
+| 仓库 | 定位 | 说明 |
+|------|------|------|
+| **本仓库** | 主框架 | AI 驱动 Revit 的核心平台，支持 MCP 协议。负责插件加载、命令调度、与 AI 对话工具（Cline、Claude、Cherry Studio 等）通信。**需先安装此框架才能使用插件。** |
+| [copilot-addins-for-revit](https://github.com/ryanchan720/copilot-addins-for-revit) | 开发模板 | AI 友好的插件开发脚手架。提供项目模板、开发规范、最佳实践，帮助开发者快速创建符合框架标准的命令插件。适合想要开发自定义命令的用户。 |
+| [general-copilot-addins-for-revit](https://github.com/ryanchan720/general-copilot-addins-for-revit) | 通用插件 | 提供现成的常用命令，覆盖元素查询、参数修改、标注创建、视图管理等高频场景。开箱即用，可直接安装到框架中。适合普通用户和快速上手。 |
+
+**快速选择指南**：
+- 想用 AI 控制 Revit → 安装本框架 + 通用插件
+- 想开发自己的命令 → 使用开发模板
+- 想直接用现成功能 → 安装通用插件
+
+---
+
 ## 核心特性
 
 - MCP Client 支持。Cline、Cherry Studio、Claude 等支持 MCP 协议的对话工具可驱动 Revit 执行操作。
