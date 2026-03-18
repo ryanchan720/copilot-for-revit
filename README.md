@@ -180,3 +180,16 @@ A：删除 `%ProgramData%\RevitCopilot\` 目录，并删除各 Revit 版本 Addi
 
 **Q：我开发的命令插件需要使用 `\*.addin` 在 Revit 中注册吗？**  
 A：不需要。命令插件按指引放置到指定位置，框架会自动识别并在需要的时候调用，不需要通过 Revit 的注册机制。
+
+**Q：如何让 MCP 服务支持局域网内其他机器访问？**  
+A：默认实现通常只监听 `localhost`。如果需要让其他机器（例如运行 OpenClaw 的 Linux 主机）访问，需要将 `McpService` 中的监听前缀改为类似 `http://+:18181/` 或指定某个局域网 IP。修改后，Windows 侧通常还需要额外完成两项系统配置：
+1. 为对应 URL 添加 `HttpListener` 监听权限（URL ACL），否则 `_listener.Start()` 可能报 `System.Net.HttpListenerException: Access is denied`
+2. 放行对应端口的 Windows 防火墙入站规则
+
+出于安全考虑，建议优先：
+- 将 URL ACL 授权给实际运行 Revit 的 Windows 用户，而不是 `Everyone`
+- 在防火墙中仅允许可信的来源 IP（例如 OpenClaw 所在主机）访问该端口
+
+**Q：将 MCP 改为远程监听后，启动时报 `Access is denied` 怎么办？**  
+A：这通常不是代码问题，而是 Windows 的 `HttpListener` 权限未配置。请以管理员权限为目标 URL 添加 URL ACL，并检查防火墙是否已放行对应端口。只要监听前缀不是 `localhost`，就很可能需要这一步。
+
