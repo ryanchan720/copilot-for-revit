@@ -70,7 +70,7 @@ namespace Main.Core.Services.Mcp
             try
             {
                 _listener = new HttpListener();
-                _listener.Prefixes.Add($"http://localhost:{Port}/");
+                _listener.Prefixes.Add($"http://+:{Port}/");
                 _listener.Start();
                 _isRunning = true;
                 _logger.LogInfo($"MCP 服务已启动，端口: {Port}");
