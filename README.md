@@ -9,13 +9,15 @@
 | 仓库 | 定位 | 说明 |
 |------|------|------|
 | **本仓库** | 主框架 | AI 驱动 Revit 的核心平台，支持 MCP 协议。负责插件加载、命令调度、与 AI 对话工具（Cline、Claude、Cherry Studio 等）通信。**需先安装此框架才能使用插件。** |
-| [copilot-addins-for-revit](https://github.com/ryanchan720/copilot-addins-for-revit-template) | 开发模板 | AI 友好的插件开发脚手架。提供项目模板、开发规范、最佳实践，帮助开发者快速创建符合框架标准的命令插件。适合想要开发自定义命令的用户。 |
+| [copilot-addins-for-revit](https://github.com/ryanchan720/copilot-addins-for-revit) | 开发模板 | AI 友好的插件开发脚手架。提供项目模板、开发规范、最佳实践，帮助开发者快速创建符合框架标准的命令插件。适合想要开发自定义命令的用户。 |
 | [general-copilot-addins-for-revit](https://github.com/ryanchan720/general-copilot-addins-for-revit) | 通用插件 | 提供现成的常用命令，覆盖元素查询、参数修改、标注创建、视图管理等高频场景。开箱即用，可直接安装到框架中。适合普通用户和快速上手。 |
+| [openclaw-bridge](https://github.com/ryanchan720/openclaw-bridge) | OpenClaw 桥接器 | 连接 OpenClaw 和 Revit Copilot 的 CLI 工具。让用户能在飞书、Telegram 等聊天工具中用自然语言操作 Revit。 |
 
 **快速选择指南**：
 - 想用 AI 控制 Revit → 安装本框架 + 通用插件
 - 想开发自己的命令 → 使用开发模板
 - 想直接用现成功能 → 安装通用插件
+- 想在聊天工具里操作 Revit → 安装 OpenClaw 桥接器
 
 ---
 
@@ -31,7 +33,7 @@
 
 - 插件热加载。编译好的插件可直接被框架识别和调用，无需额外修改代码。
 
-- （开发中）接入 OpenClaw。
+- 通过 OpenClaw 控制Revit。使用 [openclaw-bridge](https://github.com/ryanchan720/openclaw-bridge) 在飞书、Telegram 等聊天工具中用自然语言操作 Revit。
 
 - ---
 
