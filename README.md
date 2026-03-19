@@ -2,6 +2,8 @@
 
 本框架将 Revit 与 AI 能力相结合，以 AI 为脑、插件为手，实现 AI 对 Revit 的自主控制。
 
+> 🚀 **新用户？** [快速开始指南](QUICKSTART.md) - 15 分钟完成全部配置
+
 ## Copilot 生态
 
 本仓库是 Copilot For Revit 生态的核心组件：
@@ -11,7 +13,8 @@
 | **本仓库** | 主框架 | AI 驱动 Revit 的核心平台，支持 MCP 协议。负责插件加载、命令调度、与 AI 对话工具（Cline、Claude、Cherry Studio 等）通信。**需先安装此框架才能使用插件。** |
 | [copilot-addins-for-revit](https://github.com/ryanchan720/copilot-addins-for-revit) | 开发模板 | AI 友好的插件开发脚手架。提供项目模板、开发规范、最佳实践，帮助开发者快速创建符合框架标准的命令插件。适合想要开发自定义命令的用户。 |
 | [general-copilot-addins-for-revit](https://github.com/ryanchan720/general-copilot-addins-for-revit) | 通用插件 | 提供现成的常用命令，覆盖元素查询、参数修改、标注创建、视图管理等高频场景。开箱即用，可直接安装到框架中。适合普通用户和快速上手。 |
-| [openclaw-bridge](https://github.com/ryanchan720/openclaw-bridge) | OpenClaw 桥接器 | 连接 OpenClaw 和 Revit Copilot 的 CLI 工具。让用户能在飞书、Telegram 等聊天工具中用自然语言操作 Revit。 |
+| [openclaw-bridge](https://github.com/ryanchan720/openclaw-bridge) | OpenClaw 桥接器 | 连接 OpenClaw 和 Copilot for Revit 的 CLI 工具。让用户能在飞书、Telegram 等聊天工具中用自然语言操作 Revit。 |
+| [copilot-for-revit-skill](https://github.com/ryanchan720/copilot-for-revit-skill) | OpenClaw Skill | OpenClaw skill 包，配合 openclaw-bridge 使用。安装后可在聊天工具中直接操作 Revit。 |
 
 **快速选择指南**：
 - 想用 AI 控制 Revit → 安装本框架 + 通用插件
@@ -184,14 +187,18 @@ A：删除 `%ProgramData%\RevitCopilot\` 目录，并删除各 Revit 版本 Addi
 A：不需要。命令插件按指引放置到指定位置，框架会自动识别并在需要的时候调用，不需要通过 Revit 的注册机制。
 
 **Q：如何让 MCP 服务支持局域网内其他机器访问？**  
-A：默认实现通常只监听 `localhost`。如果需要让其他机器（例如运行 OpenClaw 的 Linux 主机）访问，需要将 `McpService` 中的监听前缀改为类似 `http://+:18181/` 或指定某个局域网 IP。修改后，Windows 侧通常还需要额外完成两项系统配置：
-1. 为对应 URL 添加 `HttpListener` 监听权限（URL ACL），否则 `_listener.Start()` 可能报 `System.Net.HttpListenerException: Access is denied`
-2. 放行对应端口的 Windows 防火墙入站规则
+A：在部署时添加 `-SetNetwork` 参数即可自动配置：
+```powershell
+.\deploy.ps1 -SetNetwork
+```
+该参数会自动配置 URL ACL 和防火墙规则，让 MCP 服务可从局域网访问。
 
-出于安全考虑，建议优先：
-- 将 URL ACL 授权给实际运行 Revit 的 Windows 用户，而不是 `Everyone`
-- 在防火墙中仅允许可信的来源 IP（例如 OpenClaw 所在主机）访问该端口
+> ⚠️ **安全提醒**：如果你的 Windows 有公网 IP，请考虑通过防火墙规则限制访问来源 IP，避免暴露风险。
 
-**Q：将 MCP 改为远程监听后，启动时报 `Access is denied` 怎么办？**  
-A：这通常不是代码问题，而是 Windows 的 `HttpListener` 权限未配置。请以管理员权限为目标 URL 添加 URL ACL，并检查防火墙是否已放行对应端口。只要监听前缀不是 `localhost`，就很可能需要这一步。
+**Q：使用 `-SetNetwork` 后启动 Revit 仍报 `Access is denied` 怎么办？**  
+A：请确认以管理员身份运行 `deploy.ps1 -SetNetwork`。如果仍有问题，可手动配置：
+```powershell
+netsh http add urlacl url=http://+:18181/ user=%USERNAME%
+netsh advfirewall firewall add rule name="Revit MCP 18181" dir=in action=allow protocol=TCP localport=18181
+```
 

@@ -1,6 +1,8 @@
 param(
     [ValidateSet("Debug", "Release", IgnoreCase = $true)]
-    [string]$Build = "Release"
+    [string]$Build = "Release",
+
+    [switch]$SetNetwork
 )
 
 $ErrorActionPreference = "Stop"
@@ -109,4 +111,56 @@ if ($deployed.Count -gt 0) {
 }
 Write-Host ("Install dir: " + $installDir)
 Write-Host "=========================================="
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  -SetNetwork: 配置 MCP 远程访问（URL ACL + 防火墙）
+# ─────────────────────────────────────────────────────────────────────────────
+
+if ($SetNetwork) {
+    Write-Host ""
+    Write-Host "Configuring network access for MCP service..."
+
+    $port = 18181
+    $url = "http://+:$port/"
+
+    # 配置 URL ACL
+    Write-Host "  [1/2] Configuring URL ACL..."
+    try {
+        $existingAcl = netsh http show urlacl url=$url 2>$null
+        if ($existingAcl -match $url) {
+            Write-Host "  URL ACL already exists, skipping."
+        } else {
+            netsh http add urlacl url=$url user=$env:USERNAME | Out-Null
+            Write-Host "  URL ACL added for: $url"
+        }
+    } catch {
+        Write-Error "  Failed to configure URL ACL. Make sure you're running as Administrator."
+        Write-Host $_.Exception.Message
+    }
+
+    # 配置防火墙
+    Write-Host "  [2/2] Configuring firewall..."
+    try {
+        $ruleName = "Revit MCP $port"
+        $existingRule = netsh advfirewall firewall show rule name="$ruleName" 2>$null
+        if ($existingRule -match $ruleName) {
+            Write-Host "  Firewall rule already exists, skipping."
+        } else {
+            netsh advfirewall firewall add rule name="$ruleName" dir=in action=allow protocol=TCP localport=$port | Out-Null
+            Write-Host "  Firewall rule added: $ruleName"
+        }
+    } catch {
+        Write-Error "  Failed to configure firewall."
+        Write-Host $_.Exception.Message
+    }
+
+    Write-Host ""
+    Write-Host "Network configuration complete."
+    Write-Host "MCP service is now accessible from the network on port $port."
+    Write-Host ""
+    Write-Host "  WARNING: If this machine has a public IP, consider restricting"
+    Write-Host "  access via firewall rules to specific IP ranges."
+    Write-Host ""
+}
+
 Write-Host ""
