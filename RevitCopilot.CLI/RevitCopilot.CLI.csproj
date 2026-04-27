@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>RevitCopilot.CLI</RootNamespace>
+    <AssemblyName>revit-copilot</AssemblyName>
+    <Description>Revit Copilot CLI - Install, diagnose, and manage Revit Copilot Runtime</Description>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>revit-copilot</ToolCommandName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeployCore\DeployCore.csproj" />
+  </ItemGroup>
+
+</Project>
